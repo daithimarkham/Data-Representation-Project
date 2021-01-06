@@ -7,6 +7,7 @@
 
 import mysql.connector
 from mysql.connector import cursor
+#import mydbconfig as cfg 
 
 # Make database connection
 class DvdDao:
