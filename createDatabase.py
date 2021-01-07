@@ -3,7 +3,7 @@
 import pymysql
 from mysql.connector import cursor
 
-# connect to MySQL
+# Connect to MySQL
 db = pymysql.connect(
     host="localhost", 
     user = "root", 
@@ -31,7 +31,7 @@ cursor.execute("CREATE TABLE customer(\
     name varchar(250),\
     price int,\
     PRIMARY KEY(serialNum)\
-    )")
+    )") 
 
 sql1= ("insert into dvds (title, director, price) values ('A Quiet Place', 'John Krasinski', 8.00)")
 

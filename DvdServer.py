@@ -5,10 +5,14 @@
 # More info in Doc For Flask
 
 
-from flask import Flask, jsonify, request, abort, make_response
+from flask import Flask, jsonify, request, abort
 from DvdDAO import DvdDao
 
-app = Flask(__name__, static_url_path='', static_folder='.')
+app = Flask(__name__)
+
+@app.route('/')
+def home(): #index page
+    return app.send_static_file('DvdServer.html')
 
 
 #curl "http://127.0.0.1:5000/books"
