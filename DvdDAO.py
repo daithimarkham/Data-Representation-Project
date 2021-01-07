@@ -5,89 +5,80 @@
 # It is an application program interface (API) available with Microsoft's Visual Basic,
 # that lets a programmer request access to a Microsoft Access database.
 
+
+
 import mysql.connector
 from mysql.connector import cursor
-#import mydbconfig as cfg 
+import dbconfig as cfg 
 
-# Make database connection
-class DvdDao:
-    db = "" # Variable
-    def __init__(self): # Create function 
+
+
+class DvdDAO:
+    db=""
+    def __init__(self): 
         self.db = mysql.connector.connect(
-            host = 'localhost',
-            user= 'root',
-            password = 'Root',
-            database ='dvds'
+        host =       cfg.mysql['host'],
+        user =       cfg.mysql['user'],
+        password =   cfg.mysql['password'],
+        database =   cfg.mysql['database']
         )
-        #print ("connection made")
-
-    def create(self, dvd): # CREATE function.
+    
+            
+    def create(self, values):
         cursor = self.db.cursor()
-        sql = "insert into dvds (serialNum, title, director, price) values (%s,%s,%s,%s)"
-        values = [ # Values passed into function. 
-            dvd['serialNum'],
-            dvd['title'],
-            dvd['director'],
-            dvd['price']  
-        ]
+        sql = "insert into dvds (title, director, price) values (%s,%s,%s)" 
         cursor.execute(sql, values)
-        self.db.commit()
-        return cursor.lastrowid
 
-    def getAll(self): # GETALL function 
+        self.db.commit()
+        return cursor.lastrowid 
+
+    def getAll(self):
         cursor = self.db.cursor()
-        sql = 'select * from dvds'
+        sql="select * from dvds"
         cursor.execute(sql)
         results = cursor.fetchall()
         returnArray = []
-        #print(results)
+        print(results)
         for result in results:
-            resultAsDict = self.convertToDict(result)
-            returnArray.append(resultAsDict)
+            print(result)
+            returnArray.append(self.convertToDictionary(result)) 
 
         return returnArray
 
-    def findById(self, serialNum): # Find all where ISBN = values.
+    def findByID(self, id):
         cursor = self.db.cursor()
-        sql = 'select * from dvds where serialNum = %s'
-        values = [ serialNum ] 
+        sql="select * from dvds where id = %s"
+        values = (id,)
+
         cursor.execute(sql, values)
         result = cursor.fetchone()
-        return self.convertToDict(result)
+        return self.convertToDictionary(result) 
+
+    def update(self, values):
+        cursor = self.db.cursor()
+        sql="update dvds set title = %s, director = %s, price = %s  where id = %s"
+        cursor.execute(sql, values)
+        self.db.commit()
+
+    def delete(self, id):
+        cursor = self.db.cursor()
+        sql="delete from dvds where id = %s"
+        values = (id,)
+
+        cursor.execute(sql, values)
+
+        self.db.commit()
+        print("delete done")
+
+    def convertToDictionary(self, result):
+        colnames=['id','Title','Director', "Price"]
+        item = {}
         
-
-    def update(self, dvd): # UPDATE dvd
-       cursor = self.db.cursor()
-       sql = "update dvds set title = %s, director = %s, price = %s where serialNum = %s"
-       values = [
-           dvd['title'],
-           dvd['director'],
-           dvd['price'],
-           dvd['serialNum'] 
-
-       ]
-       cursor.execute(sql, values)
-       self.db.commit()
-       return dvd
-
-    def delete(self, serialNum): # Delete dvd
-       cursor = self.db.cursor()
-       sql = 'delete from dvds where serialNum = %s'
-       values = [serialNum]
-       cursor.execute(sql, values)
-       
-       return {}
-
-
-
-    def convertToDict(self, result):
-        colnames = ['serialNum','title', 'director', 'price']
-        dvd = {}
-
         if result:
-            for i , colName in enumerate(colnames):
+            for i, colName in enumerate(colnames):
                 value = result[i]
-                dvd[colName] = value
-        return dvd
-
-dvdDao = DvdDao() 
+                item[colName] = value
+        
+        return item
+        
+DvdDao = DvdDAO() 

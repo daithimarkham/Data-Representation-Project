@@ -12,9 +12,9 @@ db = pymysql.connect(
 
 
 cursor = db.cursor() 
-cursor.execute("DROP DATABASE IF EXISTS davedvds"); 
-cursor.execute("CREATE DATABASE davedvds"); 
-cursor.execute("USE davedvds"); 
+cursor.execute("DROP DATABASE IF EXISTS davedvds")
+cursor.execute("CREATE DATABASE davedvds")
+cursor.execute("USE davedvds")
 
 
 cursor.execute("CREATE TABLE dvds(\
@@ -23,7 +23,7 @@ cursor.execute("CREATE TABLE dvds(\
     director varchar(250),\
     price int,\
     PRIMARY KEY(serialNum)\
-    )"); 
+    )") 
 
 cursor.execute("CREATE TABLE customer(\
     serialNum int NOT NULL AUTO_INCREMENT,\
@@ -31,7 +31,7 @@ cursor.execute("CREATE TABLE customer(\
     name varchar(250),\
     price int,\
     PRIMARY KEY(serialNum)\
-    )"); 
+    )")
 
 sql1= ("insert into dvds (title, director, price) values ('A Quiet Place', 'John Krasinski', 8.00)")
 

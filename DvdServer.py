@@ -5,46 +5,78 @@
 # More info in Doc For Flask
 
 
-# Import Flask 
-from flask import Flask, url_for, request, redirect, abort
+from flask import Flask, jsonify, request, abort, make_response
+from DvdDAO import DvdDao
 
-# Create Flask app
-app = Flask(__name__, static_url_path='', static_folder='staticpages') 
+app = Flask(__name__, static_url_path='', static_folder='.')
 
-@app.route('/') # Map to url. Redirect to url for login. 
-def index():
-   return  redirect(url_for('login'))
 
-@app.route('/login')
-def login():
-    abort(401)
-    return "served by Login"
+#curl "http://127.0.0.1:5000/books"
+@app.route('/dvds')
+def getAll():
+    #print("in getall")
+    results = DvdDao.getAll()
+    return jsonify(results)
 
-@app.route('/user') # Map User, enter user at end of url and will display content below. 
-def getUser(): # Method is GET
-    return "served by getUser"
+#curl "http://127.0.0.1:5000/books/2"
+@app.route('/dvds/<int:id>')
+def findById(id):
+    foundDvd = DvdDao.findByID(id) 
+    return jsonify(foundDvd) 
 
-@app.route('/user/<int:id>') # Find user by ID
-def findByIdUser(id):
-    return "served by findByIdUser with id = "+str(id)
+#curl  -i -H "Content-Type:application/json" -X POST -d "{\"Title\":\"hello\",\"Author\":\"someone\",\"Price\":123}" http://127.0.0.1:5000/books
+@app.route('/dvds', methods=['POST'])
+def create():
+    
+    if not request.json:
+        abort(400)
+    # other checking 
+    dvd = {
+        "Title": request.json['Title'],
+        "Director": request.json['Director'],
+        "Price": request.json['Price'],
+    }
+    values =(dvd['Title'],dvd['Director'],dvd['Price'])
+    newId = DvdDao.create(values)
+    dvd['id'] = newId
+    return jsonify(dvd)
 
-@app.route('/user', methods=['POST']) # Map POST method, posts method. Can't check on browser. 
-def createUser(): # Need to use Flask, cause post method. curl -X POST http://127.0.0.1:5000/user 
-    return "served by createUser"
+#curl  -i -H "Content-Type:application/json" -X PUT -d "{\"Title\":\"hello\",\"Author\":\"someone\",\"Price\":123}" http://127.0.0.1:5000/books/1
+@app.route('/books/<int:id>', methods=['PUT'])
+def update(id):
+    foundDvd = DvdDao.findByID(id)
+    if not foundDvd:
+        abort(404)
+    
+    if not request.json:
+        abort(400)
+    reqJson = request.json
+    if 'Price' in reqJson and type(reqJson['Price']) is not int:
+        abort(400)
 
-@app.route("/demo_url_for") # Demo url finds user ID
-def demoUrlFor():
-    returnString = "url For index is "+ url_for('index')
-    returnString += "<br/>"
-    returnString += "url for findByIdUser "+ url_for('findByIdUser', id=12)
-    return returnString
+    if 'Title' in reqJson:
+        foundDvd['Title'] = reqJson['Title']
+    if 'Director' in reqJson:
+        foundDvd['Director'] = reqJson['Director']
+    if 'Price' in reqJson:
+        foundDvd['Price'] = reqJson['Price']
 
-# Map route for demo request 
-@app.route("/demo_request", methods=['POST', 'GET', 'DELETE']) 
-def demoRequest():
-    return request.method 
+    values = (foundDvd['Title'],foundDvd['Director'],foundDvd['Price'],foundDvd['id'])
 
-#  Run Flask
-if __name__ == "__main__":
-    print("in if")
-    app.run(debug=True) 
+    DvdDao.update(values)
+    
+    return jsonify(foundDvd) 
+        
+
+    
+
+@app.route('/dvds/<int:id>' , methods=['DELETE'])
+def delete(id):
+    DvdDao.delete(id)
+    return jsonify({"done":True})
+
+
+
+
+if __name__ == '__main__' :
+    app.run(debug= True)

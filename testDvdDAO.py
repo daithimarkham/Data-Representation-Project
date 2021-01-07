@@ -2,7 +2,7 @@
 # 19-11-2020
 # Test code for DVD DAO program.
 
-from DvdDAO import dvdDao
+from DvdDAO import DvdDao
 
 dvd1 = {
     'serialNum': 1,
@@ -20,17 +20,5 @@ dvd2 = {
 
 
 #returnValue = bookDao.create(book)
-returnValue = dvdDao.getAll()
+returnValue = DvdDao.getAll()
 print(returnValue)
-returnValue = dvdDao.findById(dvd1['serialNum'])
-print("find By Id")
-print(returnValue)
-print("find By Id")
-returnValue = dvdDao.update(dvd2)
-print(returnValue)
-returnValue = dvdDao.findById(dvd2['serialNum'])
-print(returnValue) 
-returnValue = dvdDao.delete(dvd2['serialNum'])
-print(returnValue)
-returnValue = dvdDao.getAll()
-print(returnValue) 
