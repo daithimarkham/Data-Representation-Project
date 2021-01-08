@@ -10,9 +10,17 @@ Create a Web Application with a basic Flask server that has a REST API, (to perf
 
 ### For this project I will be using a DVD rentals database with two tables, customer and dvds.
 
+![Title](Images/image3.png)
+
 ### Steps
 
 1. Create a <a href="https://github.com/daithimarkham/Data-Representation-Project/blob/main/requirements.txt">Virtual Environment</a>, requirements.txt etc. 
+
+![Title](Images/image1.png)
+
+![Title](Images/image2.png)
+
+
 2. Using python, create a <a href="https://github.com/daithimarkham/Data-Representation-Project/blob/main/createDatabase.py">database</a> with tables using MYsql. We will use two tables for this project. 
 3. Create <a href="https://github.com/daithimarkham/Data-Representation-Project/blob/main/dbconfig.py">dbconfig.py</a> file, this is the code necessary to connect to mysql, and what database to use.
 4. Create <a href="https://github.com/daithimarkham/Data-Representation-Project/blob/main/DvdDAO.py">DAO file</a> (Data Access Object), this will hold all the specific data operations without exposing details of the database. Manages the connection with the data source to obtain and store data.
